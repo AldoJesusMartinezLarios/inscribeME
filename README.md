@@ -73,7 +73,7 @@ InscribeME+ es una aplicación integral para el Centro de Bachillerato Tecnológ
 |--------------|--------------|--------------|
 | Módulo de Registro de Profesores   | Brallan y Fernando |              |
 | Menú de Administrador Academico    |   Aldo y Gustavo   |    Completado       |
-| Inicio de Sesión Profesores   |   Gustavo   |              |
+| Inicio de Sesión Profesores   |   Gustavo   |       Completado       |
 | Menú Profesores   | Brallan y Fernando |              |
 | Módulo de Alumnos   |   Brallan y Fernando   |              |
 | Módulo de Reinscripciones   | Brallan y Fernando |              |
