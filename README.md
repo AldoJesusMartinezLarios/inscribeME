@@ -78,7 +78,7 @@ InscribeME+ es una aplicación integral para el Centro de Bachillerato Tecnológ
 | Módulo de Alumnos   |   Brallan y Fernando   |              |
 | Módulo de Reinscripciones   | Brallan y Fernando |              |
 | API para inición de sesión   | Aldo |      Completado        |
-| Inicio de Sesión Aplicación Móvil   |   Aldo y Gustavo   |              |
+| Inicio de Sesión Aplicación Móvil   |   Aldo y Gustavo   |       Completado       |
 | API conectada a MongoDB para sistema de IoT   | Aldo |      Completado        |
 | Código para ESP32 con Lector RFID RC522   | Todos |              |
 | Menú de Entradas y Salidas Aplicación Móvil   |   Aldo y Gustavo   |              |
