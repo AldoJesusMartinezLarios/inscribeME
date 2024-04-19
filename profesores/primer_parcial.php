@@ -1,0 +1,190 @@
+<?php
+session_start();
+
+include("../conexion/conexion.php");
+
+if (!isset($_SESSION['correo_electronico'])) {
+    header("Location: ../index.php");
+    exit;
+}
+
+$correo_electronico = $_SESSION['correo_electronico'];
+
+include("includes/header.php");
+
+if(isset($_GET['id_materia'])) {
+    $id_materia = $_GET['id_materia'];
+
+    // Obtener el id_grupo de la materia seleccionada
+    $query_grupo_materia = "SELECT id_grupo, nombre FROM materias WHERE id_materia = $id_materia";
+    $resultado_grupo_materia = mysqli_query($conexion, $query_grupo_materia);
+
+    if (!$resultado_grupo_materia) {
+        die("Error al ejecutar la consulta: " . mysqli_error($conexion));
+    }
+
+    $row_grupo_materia = mysqli_fetch_assoc($resultado_grupo_materia);
+    $id_grupo = $row_grupo_materia['id_grupo'];
+    $nombre_materia = $row_grupo_materia['nombre'];
+
+    // Consultar el nombre del grupo
+    $query_nombre_grupo = "SELECT grupo FROM grupo WHERE id_grupo = $id_grupo";
+    $resultado_nombre_grupo = mysqli_query($conexion, $query_nombre_grupo);
+
+    if (!$resultado_nombre_grupo) {
+        die("Error al ejecutar la consulta: " . mysqli_error($conexion));
+    }
+
+    $row_nombre_grupo = mysqli_fetch_assoc($resultado_nombre_grupo);
+    $nombre_grupo = $row_nombre_grupo['grupo'];
+
+    // Consultar los alumnos que pertenecen al grupo asignado a la materia
+    $query_alumnos_grupo = "SELECT * FROM alumnos WHERE grupo = '$nombre_grupo'";
+    $resultado_alumnos_grupo = mysqli_query($conexion, $query_alumnos_grupo);
+
+    if (!$resultado_alumnos_grupo) {
+        die("Error al ejecutar la consulta: " . mysqli_error($conexion));
+    }
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $calificaciones = $_POST['calificaciones'];
+
+    foreach ($calificaciones as $id_aspirante => $calificacion) {
+        // Verificar si la calificación es válida y no está vacía
+        if (!empty($calificacion) && is_numeric($calificacion)) {
+            
+            // Insertar la calificación y el status en la base de datos
+            $query_insert_calificacion = "INSERT INTO calificaciones (id_materia, id_aspirante, primer_parcial, promedio) VALUES ('$id_materia', '$id_aspirante', '$calificacion', '$calificacion' / 3)";
+            $resultado_insert_calificacion = mysqli_query($conexion, $query_insert_calificacion);
+    
+            if (!$resultado_insert_calificacion) {
+                die("Error al insertar calificación: " . mysqli_error($conexion));
+            }
+        } else {
+            echo "Error: Calificación no válida para el aspirante con ID: $id_aspirante. Se ha omitido la calificación.";
+        }
+    }
+    // Redirigir a calificaciones.php después de procesar las calificaciones
+    header("Location: calificaciones.php?id_materia=$id_materia");
+    exit;
+}
+
+// Crear un array para almacenar los IDs de los alumnos que ya tienen una calificación asignada
+$alumnos_con_calificacion = array();
+
+// Obtener los IDs de los alumnos con calificaciones asignadas en la materia
+$query_calificaciones_asignadas = "SELECT id_aspirante FROM calificaciones WHERE id_materia = $id_materia";
+$resultado_calificaciones_asignadas = mysqli_query($conexion, $query_calificaciones_asignadas);
+
+if ($resultado_calificaciones_asignadas) {
+    while ($row_calificacion = mysqli_fetch_assoc($resultado_calificaciones_asignadas)) {
+        $alumnos_con_calificacion[] = $row_calificacion['id_aspirante'];
+    }
+}
+
+$query_alumnos_con_calificacion = "SELECT alumnos.*, calificaciones.* 
+                                    FROM alumnos 
+                                    INNER JOIN calificaciones 
+                                    ON alumnos.id_aspirante = calificaciones.id_aspirante 
+                                    WHERE calificaciones.id_materia = $id_materia";
+$resultado_alumnos_con_calificacion = mysqli_query($conexion, $query_alumnos_con_calificacion);
+
+if (!$resultado_alumnos_con_calificacion) {
+    die("Error al ejecutar la consulta: " . mysqli_error($conexion));
+}
+?>
+
+<div class="container p-4 d-flex justify-content-end">
+    <a href="calificaciones.php?id_materia=<?php echo $id_materia ?>" class=" btn btn-primary">Regresar</a>
+</div>
+
+<?php
+if(mysqli_num_rows($resultado_alumnos_con_calificacion) > 0){
+    ?>
+    <div class="container p-4">
+        <h1 class="mb-4">Calificaciones de la materia:  <?php echo $nombre_materia; ?> (Primer Parcial)</h1>
+
+        <div class="card card-body">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Id Alumno</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Correo Electrónico</th>
+                        <th>Teléfono</th>
+                        <th>Calificación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    while ($row_alumno_calificado = mysqli_fetch_assoc($resultado_alumnos_con_calificacion)) {
+                        echo "<tr";
+                        echo ">";
+                        echo "<td>" . $row_alumno_calificado['id_aspirante'] . "</td>";
+                        echo "<td>" . $row_alumno_calificado['nombre'] . "</td>";
+                        echo "<td>" . $row_alumno_calificado['primer_apellido'] . " " . $row_alumno_calificado['segundo_apellido'] . "</td>";
+                        echo "<td>" . $row_alumno_calificado['correo_electronico'] . "</td>";
+                        echo "<td>" . $row_alumno_calificado['telefono'] . "</td>";
+                        echo "<td>" . $row_alumno_calificado['primer_parcial'] . "</td>";
+                        echo "</tr>";
+                    }
+                    
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr>
+    <?php
+}else{
+    ?>
+    <div class="container p-4">
+        <h1 class="mb-4">Ingresar Calificaciones del Primer Parcial - Materia: <?php echo $nombre_materia; ?></h1>
+
+        <div class="card card-body">
+            <form method="POST" action="">
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Id Alumno</th>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Correo Electrónico</th>
+                            <th>Teléfono</th>
+                            <th>Calificación del Primer Parcial</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // Mostrar los alumnos en el formulario para ingresar nuevas calificaciones del primer parcial
+                        while ($row_alumno = mysqli_fetch_assoc($resultado_alumnos_grupo)) {
+                            if (!in_array($row_alumno['id_aspirante'], $alumnos_con_calificacion)) {
+                                echo "<tr>";
+                                echo "<td>" . $row_alumno['id_aspirante'] . "</td>";
+                                echo "<td>" . $row_alumno['nombre'] . "</td>";
+                                echo "<td>" . $row_alumno['primer_apellido'] . " " . $row_alumno['segundo_apellido'] . "</td>";
+                                echo "<td>" . $row_alumno['correo_electronico'] . "</td>";
+                                echo "<td>" . $row_alumno['telefono'] . "</td>";
+                                ?>
+                                <td><input type="number" name="calificaciones[<?php echo $row_alumno['id_aspirante']; ?>]" class="form-control" required></td>
+                                <?php
+                                echo "</tr>";
+                            }
+                        }
+                        ?>
+                    </tbody>
+                </table>
+                <hr>
+                <div class="container p-4 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary form-control">Guardar Calificaciones del Primer Parcial</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php
+}
+?>
+
+<?php include("includes/footer.php"); ?>
