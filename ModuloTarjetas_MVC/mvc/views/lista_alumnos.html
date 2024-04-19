@@ -1,0 +1,150 @@
+$def with (alumnos, pagina_actual, total_paginas, hash_alumnos, padres_asignados)
+<div class="container">
+    <img src="../../static/images/control-parental.png" alt="Logo" class="logo">
+    <h1>LISTA DE TODOS LOS ALUMNOS</h1>
+    <div class="text-center mb-4">
+        <a href="/lista_padres" class="button">Padres</a>
+    </div>
+    <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Primer Apellido</th>
+                        <th>Segundo Apellido</th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    $for i, alumno in enumerate(alumnos):
+                    <tr>
+                        <td>${alumno['id_aspirante']}</td>
+                        <td>${alumno['nombre']}</td>
+                        <td>${alumno['primer_apellido']}</td>
+                        <td>${alumno['segundo_apellido']}</td>
+                        <td>
+                            $if padres_asignados[alumno['id_aspirante']]:
+                                <!-- Verifica si el alumno tiene un padre asignado -->
+                                <a href="/actualizar_padre?id_alumno=${alumno['id_aspirante']}" class="button button-success">Actualizar Padre</a>
+                            $else:
+                                <a href="/asignar_padre?id_alumno=${alumno['id_aspirante']}" class="button button-warning">Asignar Padre</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item ${ 'disabled' if pagina_actual == 1 else '' }}">
+                <a class="page-link" href="${ '/lista_alumnos?pagina={}'.format(pagina_actual - 1) if pagina_actual > 1 else '#!' }" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="/lista_alumnos?pagina=1">1</a>
+            </li>
+            $for pagina in range(2, total_paginas + 1):
+            <li class="page-item">
+                <a class="page-link" href="/lista_alumnos?pagina=${pagina}">${pagina}</a>
+            </li>
+            <li class="page-item ${ 'disabled' if pagina_actual == total_paginas else '' }}">
+                <a class="page-link" href="${ '/lista_alumnos?pagina={}'.format(pagina_actual + 1) if pagina_actual < total_paginas else '#!' }" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>    
+</div>
+
+<style>
+    /* Estilos CSS */
+    :root {
+        --primary-color: #8B0000;
+        --secondary-color: #0000FF;
+        --background-color: #F5F5F5;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px; /* Agrega un espaciado alrededor del contenido */
+        background-color: var(--background-color);
+    }
+
+    .container {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+        padding: 20px;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+
+    .logo {
+        display: block;
+        max-width: 100px;
+        height: auto;
+        margin: 0 auto 10px;
+    }
+
+    .button {
+        background-color: var(--primary-color);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 15px 30px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .button-success {
+        background-color: #28a745;
+    }
+
+    .button-warning {
+        background-color: #ffc107;
+    }
+
+    .table {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .table th,
+    .table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .table th {
+        background-color: var(--primary-color);
+        color: #fff;
+    }
+
+    .pagination {
+        margin-top: 20px;
+    }
+
+    .pagination .page-item .page-link {
+        color: var(--primary-color);
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+</style>
