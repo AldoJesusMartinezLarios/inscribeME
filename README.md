@@ -1,6 +1,6 @@
 # InscribeME+
 <p align="left">
-   <img src="https://img.shields.io/badge/STATUS-EN%20DESARROLLO-green">
+   <img src="https://img.shields.io/badge/STATUS-FINALIZADO-green">
 </p>
 
 <p></p>
@@ -80,7 +80,7 @@ InscribeME+ es una aplicación integral para el Centro de Bachillerato Tecnológ
 | API para inición de sesión   | Aldo |      Completado        |
 | Inicio de Sesión Aplicación Móvil   |   Aldo y Gustavo   |       Completado       |
 | API conectada a MongoDB para sistema de IoT   | Aldo |      Completado        |
-| Código para ESP32 con Lector RFID RC522   | Todos |              |
+| Código para ESP32 con Lector RFID RC522   | Todos |       Completado       |
 | Menú de Entradas y Salidas Aplicación Móvil   |   Aldo y Gustavo   |       Completado       |
 | Módulo Registro de Padres y Asignación de Tarjetas   |   Aldo y Gustavo   |      Completado        |
 
