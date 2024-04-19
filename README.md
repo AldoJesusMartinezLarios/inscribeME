@@ -71,10 +71,10 @@ InscribeME+ es una aplicación integral para el Centro de Bachillerato Tecnológ
 ## Asignación de actividades por módulos.
 | Módulo  | Integrantes| Completado/Haciendo |
 |--------------|--------------|--------------|
-| Módulo de Registro de Profesores   | Brallan y Fernando |              |
+| Módulo de Registro de Profesores   | Brallan y Fernando |  Completado  |
 | Menú de Administrador Academico    |   Aldo y Gustavo   |    Completado       |
 | Inicio de Sesión Profesores   |   Gustavo   |       Completado       |
-| Menú Profesores   | Brallan y Fernando |              |
+| Menú Profesores   | Brallan y Fernando |  Completado |
 | Módulo de Alumnos   |   Brallan y Fernando   |              |
 | Módulo de Reinscripciones   | Brallan y Fernando |              |
 | API para inición de sesión   | Aldo |      Completado        |
